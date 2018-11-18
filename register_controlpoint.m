@@ -50,12 +50,13 @@ movingPointsAdjusted = cpcorr(movingPoints,fixedPoints,...
 mytform_cp_corr = fitgeotrans(movingPointsAdjusted, fixedPoints, 'NonreflectiveSimilarity');
 
 % apply the transform and clip it with the window of the original image
-registered = imwarp(unregistered, mytform_cp_corr,'OutputView',imref2d(size(original)) );
+registered_cp_corr = imwarp(unregistered, mytform_cp_corr,'OutputView',imref2d(size(original)) );
 
 % fuse two images with red and green
-imf_cp_corr = imfuse(original,registered,'falsecolor','Scaling','joint','ColorChannels',[1 2 0]);
+imf_cp_corr = imfuse(original,registered_cp_corr,'falsecolor','Scaling','joint','ColorChannels',[1 2 0]);
 
-save('image_fused','imf_cp_corr')
+%% save files
+save('output_images','original','unregistered','registered_cp','registered_cp_corr','imf_before','imf_cp_corr')
 
 
 %% Visualization
