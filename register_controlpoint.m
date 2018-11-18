@@ -59,35 +59,43 @@ save('image_fused','imf_cp_corr')
 
 
 %% Visualization
-subplot(3,2,1)
+
+    figure('Units','inches',...
+    'Position',[5 5 6 6],...
+    'PaperPositionMode','auto');
+
+    set(gca,...
+    'Units','normalized',...
+    'Position',[.15 .2 .75 .7],...
+    'FontUnits','points',...
+    'FontWeight','normal',...
+    'FontSize',9,...
+    'FontName','Arial');
+
+subplot(2,2,1)
 image(original);
-title('Truth')
+title('(a) Truth')
 axis image
 axis off
 
-subplot(3,2,2)
+subplot(2,2,2)
 image(unregistered);
-title('WSI')
+title('(b) WSI')
 axis image
 axis off
 
-subplot(3,2,3)
+subplot(2,2,3)
 image(imf_before);
-title('Before registration')
+title('(c) Images fused before registration')
 axis image
 axis off
 
-subplot(3,2,4)
+subplot(2,2,4)
 image(imf_cp_corr);
-title('Registration with control point only')
+title('(d) Images fused after registration')
 axis image
 axis off
 
-subplot(3,2,5)
-image(imf_cp_corr);
-title('Registration with control point and cross correlation')
-axis image
-axis off
 
 return
 end
