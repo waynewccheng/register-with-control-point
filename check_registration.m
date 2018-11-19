@@ -4,7 +4,7 @@ load('output_images','original','unregistered','registered_cp','registered_cp_co
 
 % intionally create offset to show what if misaligned
 offsetx = -1;
-offsety = -1;
+offsety = 0;
 
 % get original size
 sizex1 = 1;
@@ -13,19 +13,22 @@ sizex2 = size(original,2);
 sizey2 = size(original,1);
 
 if 1
-sizex1 = 100;
-sizex2 = sizex1 + 50;
+    
+    sizen = 200;
+    
+    sizex1 = 50;
+    sizey1 = 50;
 
-sizey1 = 100;
-sizey2 = sizey1 + 50;
-
+    sizex2 = sizex1 + sizen;
+    sizey2 = sizey1 + sizen;
+    
 else
-% reduce the size by offset
-sizex1 = sizex1 + abs(offsetx);
-sizex2 = sizex2 - abs(offsetx);
-
-sizey1 = sizey1 + abs(offsety);
-sizey2 = sizey2 - abs(offsety);
+    % reduce the size by offset
+    sizex1 = sizex1 + abs(offsetx);
+    sizex2 = sizex2 - abs(offsetx);
+    
+    sizey1 = sizey1 + abs(offsety);
+    sizey2 = sizey2 - abs(offsety);
 end
 
 im1 = original(sizey1:sizey2,sizex1:sizex2,:);
@@ -38,8 +41,8 @@ imf_test = imfuse(im1,im2,...
 %% visualization
 
 
-cursorx = 25;
-cursory = 20;
+cursorx = 28;
+cursory = 45;
 
 
 clf
@@ -56,8 +59,8 @@ axis image
 axis off
 
 subplot(5,3,[2 5 8])
-im2tmp(cursory,:,1) = 0;
-im2tmp(:,cursorx,2) = 0;
+im2tmp(cursory,1:2:end,1) = 0;
+im2tmp(1:2:end,cursorx,2) = 0;
 image(im2tmp);
 axis image
 axis off
@@ -83,9 +86,10 @@ line2 = lab2(cursory,:,1);
 line12 = mean(double(line1)./double(line2));
 plot(line1,'c-')
 plot(line2*line12,'c:')
-title(sprintf('Profile at y=%d',cursory))
+title(sprintf('L* profile at y=%d',cursory))
 xlabel('X position')
 ylabel('CIE L*')
+axis([1 sizen 0 100])
 
 subplot(5,3,13:15)
 hold on
@@ -94,8 +98,9 @@ line2 = lab2(:,cursorx);
 line12 = mean(double(line1)./double(line2));
 plot(line1,'m-')
 plot(line2*line12,'m:')
-title(sprintf('Profile at x=%d',cursorx))
+title(sprintf('L* profile at x=%d',cursorx))
 xlabel('Y position')
 ylabel('CIE L*')
+axis([1 sizen 0 100])
 
 end
