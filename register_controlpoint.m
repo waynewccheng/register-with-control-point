@@ -34,7 +34,7 @@ cp_method = 'affine';
 %% Registered results using control points only
 % calculate the transform
 mytform_cp = fitgeotrans(movingPoints, fixedPoints, cp_method);
-save('my_geotrans','mytform_cp')
+mytform_cp.T
 
 % apply the transform and clip it with the window of the original image
 registered_cp = imwarp(unregistered, mytform_cp,'OutputView',imref2d(size(original)));
@@ -55,6 +55,7 @@ movingPointsAdjusted = cpcorr(movingPoints,fixedPoints,...
 
 % calculate the transform
 mytform_cp_corr = fitgeotrans(movingPointsAdjusted, fixedPoints, cp_method);
+mytform_cp_corr.T
 
 % apply the transform and clip it with the window of the original image
 registered_cp_corr = imwarp(unregistered, mytform_cp_corr,'OutputView',imref2d(size(original)) );
@@ -63,6 +64,7 @@ registered_cp_corr = imwarp(unregistered, mytform_cp_corr,'OutputView',imref2d(s
 imf_cp_corr = imfuse(original,registered_cp_corr,'falsecolor','Scaling','joint','ColorChannels',[1 2 0]);
 
 %% save files
+save('my_geotrans','mytform_cp','mytform_cp_corr')
 save('output_images','original','unregistered','registered_cp','registered_cp_corr','imf_before','imf_cp_corr')
 
 

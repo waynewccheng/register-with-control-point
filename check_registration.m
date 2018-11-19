@@ -46,7 +46,7 @@ clf
 im1tmp = im1;
 im2tmp = im2;
 
-subplot(3,3,1)
+subplot(5,3,[1 4 7])
 im1tmp(cursory,:,1) = 0;
 im1tmp(:,cursorx,2) = 0;
 image(im1tmp);
@@ -55,15 +55,15 @@ title('Truth')
 axis image
 axis off
 
-subplot(3,3,2)
+subplot(5,3,[2 5 8])
 im2tmp(cursory,:,1) = 0;
 im2tmp(:,cursorx,2) = 0;
 image(im2tmp);
 axis image
 axis off
-title('WSI')
+title(sprintf('WSI (%d,%d)',offsetx,offsety))
 
-subplot(3,3,3)
+subplot(5,3,[3 6 9])
 image(imf_test);
 axis image
 axis off
@@ -76,22 +76,22 @@ title('Compare images')
 lab1 = rgb2lab(im1);
 lab2 = rgb2lab(im2);
 
-subplot(3,3,4:6)
+subplot(5,3,10:12)
 hold on
 line1 = lab1(cursory,:,1);
 line2 = lab2(cursory,:,1);
-line12 = mean(double(line1)./double(line2))
+line12 = mean(double(line1)./double(line2));
 plot(line1,'c-')
 plot(line2*line12,'c:')
 title(sprintf('Profile at y=%d',cursory))
 xlabel('X position')
 ylabel('CIE L*')
 
-subplot(3,3,7:9)
+subplot(5,3,13:15)
 hold on
 line1 = lab1(:,cursorx);
 line2 = lab2(:,cursorx);
-line12 = mean(double(line1)./double(line2))
+line12 = mean(double(line1)./double(line2));
 plot(line1,'m-')
 plot(line2*line12,'m:')
 title(sprintf('Profile at x=%d',cursorx))
