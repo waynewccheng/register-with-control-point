@@ -6,24 +6,27 @@ load('output_images','original','unregistered','registered_cp','registered_cp_co
 % intionally create offset to show what if misaligned
 % ended up the original tform was not optimal
 offsetx = -1;
-offsety = 0;
+offsety = -2;
 Offset = [offsetx offsety]
 
 % get original size
+size(original)
 sizex1 = 1;
 sizey1 = 1;
 sizex2 = size(original,2);
 sizey2 = size(original,1);
 
+
 if 1
-    % use a smaller window to see the pixelation
-    sizen = 200;
+    % see the whole image
+    sizen = 600;
     
+    % use a smaller window to see the pixelation
     sizex1 = 50;
     sizey1 = 50;
-
-    sizex2 = sizex1 + sizen;
-    sizey2 = sizey1 + sizen;
+    
+    sizex2 = sizex1 + sizen - 1;
+    sizey2 = sizey1 + sizen - 1;
     
 else
     % reduce the size by offset
@@ -50,6 +53,7 @@ p_total_row = p_2nd_profile_start_from_row+1;
 p_total_column = p_size_per_image*3;
 
 p_mask_matrix_temp = zeros(p_total_row,p_total_column);
+
 k = 1;
 for i = 1:p_size_per_image
     for j = 1:p_size_per_image
@@ -78,11 +82,29 @@ end
 p_mask_matrix_3 = p_mask_matrix_temp;
 
 
-cursorx = 27;
-cursory = 78;
+% cursorx = 27;
+% cursory = 78;
 
+% cursorx = 108;
+% cursory = 541;
+
+cursorx = 564;
+cursory = 539;
 
 clf
+
+figure('Units','inches',...
+    'Position',[1 1 16 9],...
+    'PaperPositionMode','auto');
+
+set(gca,...
+    'Units','normalized',...
+    'Position',[.15 .2 .75 .7],...
+    'FontUnits','points',...
+    'FontWeight','normal',...
+    'FontSize',9,...
+    'FontName','Arial');
+
 im1tmp = im1;
 im2tmp = im2;
 
@@ -116,12 +138,11 @@ title('Fused Image (R=Truth, G=WSI)')
 
 %% show profile
 
-
-
 % in CIELAB
 lab1 = rgb2lab(im1);
 lab2 = rgb2lab(im2);
 
+% horizontal profile
 subplot(p_total_row,p_total_column,p_total_column*p_1st_profile_start_from_row+1:p_total_column*(p_1st_profile_start_from_row+1))
 hold on
 line1 = lab1(cursory,:,1);
@@ -134,6 +155,7 @@ xlabel('X position')
 ylabel('CIE L*')
 axis([1 sizen 0 100])
 
+% vertical profile
 subplot(p_total_row,p_total_column,p_total_column*p_2nd_profile_start_from_row+1:p_total_column*(p_2nd_profile_start_from_row+1))
 hold on
 line1 = lab1(:,cursorx);
