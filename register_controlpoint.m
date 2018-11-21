@@ -70,11 +70,11 @@ save('output_images','original','unregistered','registered_cp','registered_cp_co
 
 %% Visualization
 
-    figure('Units','inches',...
+figure('Units','inches',...
     'Position',[5 5 6 6],...
     'PaperPositionMode','auto');
 
-    set(gca,...
+set(gca,...
     'Units','normalized',...
     'Position',[.15 .2 .75 .7],...
     'FontUnits','points',...
@@ -82,30 +82,50 @@ save('output_images','original','unregistered','registered_cp','registered_cp_co
     'FontSize',9,...
     'FontName','Arial');
 
-subplot(2,2,1)
-image(original);
+sc = 100;
+sp(1) = subplot(2,2,1);
+imshow(original,'InitialMagnification',sc);
 title('(a) Truth')
 axis image
 axis off
 
-subplot(2,2,2)
-image(unregistered);
+sp(2) = subplot(2,2,2);
+imshow(unregistered,'InitialMagnification',sc);
 title('(b) WSI')
 axis image
 axis off
 
-subplot(2,2,3)
-image(imf_before);
+sp(3) = subplot(2,2,3);
+imshow(imf_before,'InitialMagnification',sc);
 title('(c) Images fused before registration')
 axis image
 axis off
 
-subplot(2,2,4)
-image(imf_cp_corr);
+sp(4) = subplot(2,2,4);
+imshow(imf_cp_corr,'InitialMagnification',sc);
 title('(d) Images fused after registration')
 axis image
 axis off
 
+if 1
+    % tight axis
+    gmargin = 0.05;
+    gx = 2;
+    gy = 2;
+    gstepx = (1-gmargin)/gx;
+    gstepy = (1-gmargin)/gy;
+    
+    for i = 1:4
+        row = (gy-1) - floor((i-1)/gy);
+        column = mod(i-1,gy);
+        gposx = gmargin + column * gstepx;
+        gposy = gmargin + row * gstepy;
+        sp(i).Position(1) = gposx;
+        sp(i).Position(2) = gposy;
+        sp(i).Position(3) = gstepx - gmargin;
+        sp(i).Position(4) = (gstepy - gmargin);
+    end
+end
 
 return
 end

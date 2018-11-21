@@ -2,10 +2,17 @@
 
 function check_registration_with_bars
 
-% intionally create offset to show what if misaligned
+% intentionally create offset to show what if misaligned
 % ended up the original tform was not optimal
-offset = [0 0]
+offset = [-1 0]
 
+%% determine where to profile
+cursor = [26 78];
+
+% the ROI size
+% need to be square before the profiles sizing is fixed
+sizex = 300;
+sizey = 300;
 
 load('output_images','original','unregistered','registered_cp','registered_cp_corr','imf_before','imf_cp_corr')
 
@@ -19,26 +26,14 @@ while done==0
     
     sizex2_original = size(original,2);
     sizey2_original = size(original,1);
-    
+
+    % size for im1
     sizex1 = 1;
     sizey1 = 1;
-    sizex2 = sizex2_original;
-    sizey2 = sizey2_original;
-    
-    
-    % see the whole image
-    sizex = 300;
-    sizey = 300;
-    
-    % use a smaller window to see the pixelation
-    sizex1 = 50;
-    sizey1 = 50;
-    
     sizex2 = min(sizex1 + sizex - 1, sizex2_original);
-    
     sizey2 = min(sizey1 + sizey - 1, sizey2_original);
     
-    
+    % size for im2
     reg_sizex = [sizex1:sizex2]+offset(1);
     reg_sizex = min(reg_sizex,sizex2_original);
     reg_sizex = max(reg_sizex,1);
@@ -47,33 +42,14 @@ while done==0
     reg_sizey = min(reg_sizey,sizey2_original);
     reg_sizey = max(reg_sizey,1);
     
-    
+    % retrieve the ROI
     im1 = original(sizey1:sizey2,sizex1:sizex2,:);
     
     im2 = registered_cp_corr(reg_sizey,reg_sizex,:);
-    
-    
+        
     imf_test = imfuse(im1,im2,...
         'falsecolor','Scaling','joint',...
         'ColorChannels',[1 2 0]);
-    
-    %% determine where to profile
-    % cursorx = 27;
-    % cursory = 78;
-    
-    % cursorx = 108;
-    % cursory = 541;
-    
-    cursorx = 564;
-    cursory = 539;
-    
-    cursorx = 88;
-    cursory = 516;
-    
-    cursorx = 44;
-    cursory = 56;
-    
-    cursor = [44 56];
     
     [done offset] = compare_two_registered_images (im1, im2, cursor, offset);
     
@@ -81,7 +57,7 @@ end
 
 %% save data
 
-% saveas(gcf,'finding registration.png')
+saveas(gcf,'finding registration.png')
 
 
 end
@@ -131,7 +107,7 @@ offs = subplot(2,2,3);
 subplot(graph)
 
 flag = 1;
-
+done = 0;
 click_xy = cursor;
 
 while flag==1
@@ -264,25 +240,23 @@ while flag==1
             if (click_xy(1) >= 0 && click_xy(1)<=1 && click_xy(2) >= 0 && click_xy(2)<=1)
                 
                 % 9x9 buttons
-                if click_xy(1) > 1/3 && click_xy(1) < 2/3
-                    if click_xy(2) < 1/3
-                        offset(2) = offset(2) - 1;
-                    else
-                        if click_xy(2) > 2/3
-                            offset(2) = offset(2) + 1;
-                        end
+                
+                if click_xy(1) < 1/3
+                    offset(1) = offset(1) - 1;
+                else
+                    if click_xy(1) > 2/3
+                        offset(1) = offset(1) + 1;
                     end
                 end
                 
-                if click_xy(2) > 1/3 && click_xy(2) < 2/3
-                    if click_xy(1) < 1/3
-                        offset(1) = offset(1) - 1;
-                    else
-                        if click_xy(1) > 2/3
-                            offset(1) = offset(1) + 1;
-                        end
+                if click_xy(2) < 1/3
+                    offset(2) = offset(2) - 1;
+                else
+                    if click_xy(2) > 2/3
+                        offset(2) = offset(2) + 1;
                     end
                 end
+                
                 
                 flag = 0;
                 done = 0;
@@ -305,7 +279,13 @@ while flag==1
             
     end
     
-    
+    % remove offset info
+    if done==1
+        cla(offs)
+        
+        subplot(graph)
+        title('');
+    end
 end
 
 end
