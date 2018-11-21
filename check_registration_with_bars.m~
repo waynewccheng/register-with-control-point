@@ -19,8 +19,8 @@ sizey2 = size(original,1);
 
 if 1
     % see the whole image
-    sizex = 200;
-    sizey = 300;
+    sizex = 400;
+    sizey = 600;
     
     % use a smaller window to see the pixelation
     sizex1 = 50;
@@ -73,9 +73,6 @@ cursory = 539;
 
 cursorx = 88;
 cursory = 516;
-
-cursorx = 88;
-cursory = 56;
 
 % new figure
 figure('Units','inches',...
@@ -145,10 +142,10 @@ plot(line1,'c-')
 plot(line2*line12ratio,'c:')
 
 xlabel(sprintf('X position (Y=%d)',cursory))
-ylabel('L^*','Rotation',0)
+ylabel('L^*')
 axis([1 size(lab1,2) 0 100])
 
-profx.YAxisLocation = 'right';
+
 
 %% vertical profile
 
@@ -167,9 +164,7 @@ plot(line2*line12ratio,di,'m:')
 ylabel(sprintf('Y position (X=%d)',cursorx))
 xlabel('L^*')
 axis([0 100 1 size(lab1,1)])
-
 set(profy,'Ydir','reverse')
-
 
 %% align the 3 subplots
 
