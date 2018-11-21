@@ -11,10 +11,14 @@ Offset = [offsetx offsety]
 
 % get original size
 size(original)
+
+sizex2_original = size(original,2);
+sizey2_original = size(original,1);
+
 sizex1 = 1;
 sizey1 = 1;
-sizex2 = size(original,2);
-sizey2 = size(original,1);
+sizex2 = sizex2_original;
+sizey2 = sizey2_original;
 
 
 if 1
@@ -26,8 +30,9 @@ if 1
     sizex1 = 50;
     sizey1 = 50;
     
-    sizex2 = sizex1 + sizex - 1;
-    sizey2 = sizey1 + sizey - 1;
+    sizex2 = min(sizex1 + sizex - 1, sizex2_original);
+    
+    sizey2 = min(sizey1 + sizey - 1, sizey2_original);
     
 else
     % reduce the size by offset
@@ -38,8 +43,20 @@ else
     sizey2 = sizey2 - abs(offsety);
 end
 
+
+reg_sizex = [sizex1:sizex2]+offsetx;
+reg_sizex = min(reg_sizex,sizex2_original);
+reg_sizex = max(reg_sizex,1);
+
+reg_sizey = [sizey1:sizey2]+offsety;
+reg_sizey = min(reg_sizey,sizey2_original);
+reg_sizey = max(reg_sizey,1);
+
+
 im1 = original(sizey1:sizey2,sizex1:sizex2,:);
-im2 = registered_cp_corr([sizey1:sizey2]+offsety,[sizex1:sizex2]+offsetx,:);
+
+im2 = registered_cp_corr(reg_sizey,reg_sizex,:);
+
 
 imf_test = imfuse(im1,im2,...
     'falsecolor','Scaling','joint',...
@@ -49,6 +66,7 @@ imf_test = imfuse(im1,im2,...
 
 box_start = 0.1;
 box_length = 0.8;
+
 image_ratio = 0.1;
 prof_ratio = 0.8;
 
@@ -56,11 +74,6 @@ prof_ratio = 0.8;
 image_Position = [box_start+image_ratio*box_length box_start+image_ratio*box_length...
     box_length*(1-image_ratio) box_length*(1-image_ratio)];
 
-
-
-p_size_per_image = 1;
-p_total_row = p_size_per_image+1;
-p_total_column = p_size_per_image+1;
 
 % cursorx = 27;
 % cursory = 78;
@@ -90,8 +103,7 @@ set(gca,...
     'FontSize',9,...
     'FontName','Arial');
 
-im1tmp = im1;
-im2tmp = im2;
+
 
 % % Truth image
 % subplot(p_total_row,p_total_column,find(p_mask_matrix_1'))
@@ -103,17 +115,17 @@ im2tmp = im2;
 % axis image
 % axis off
 
-p_mask_matrix_temp = zeros(p_total_row,p_total_column);
-for i = 1:p_size_per_image
-    for j = 1:p_size_per_image
-        p_mask_matrix_temp(i,j+1) = 1;
-    end
-end
-p_mask_matrix_4 = p_mask_matrix_temp;
-
 
 % WSI image
-graph = subplot(p_total_row,p_total_column,find(p_mask_matrix_4'));
+graph = subplot(2,2,2);
+
+
+% in CIELAB
+lab1 = rgb2lab(im1);
+lab2 = rgb2lab(im2);
+
+im1tmp = im1;
+im2tmp = im2;
 
 im2tmp(cursory,1:2:end,1) = 0;  % cyan
 im2tmp(1:2:end,cursorx,2) = 0;  % magenta
@@ -127,14 +139,9 @@ set(graph,'xtick',[])
 set(graph,'ytick',[])
 
 
-% in CIELAB
-lab1 = rgb2lab(im1);
-lab2 = rgb2lab(im2);
-
 %% horizontal profile
 
-profx = subplot(p_total_row,p_total_column,...
-    (p_total_row-1)*p_total_column+1 : 1 : p_total_row*p_total_column);
+profx = subplot(2,2,4);
 
 line1 = lab1(cursory,:,1);
 line2 = lab2(cursory,:,1);
@@ -152,8 +159,7 @@ profx.YAxisLocation = 'right';
 
 %% vertical profile
 
-profy = subplot(p_total_row,p_total_column,...
-    1 : p_total_column : p_total_column*(p_total_row-1));
+profy = subplot(2,2,1);
 
 line1 = lab1(:,cursorx,1);
 line2 = lab2(:,cursorx,1);
@@ -164,8 +170,8 @@ hold on
 plot(line1,di,'m-')
 plot(line2*line12ratio,di,'m:')
 
-ylabel(sprintf('Y position (X=%d)',cursorx))
 xlabel('L^*')
+ylabel(sprintf('Y position (X=%d)',cursorx))
 axis([0 100 1 size(lab1,1)])
 
 set(profy,'Ydir','reverse')
@@ -186,6 +192,7 @@ profy.Position(3) = (graph.Position(1)-box_start) * prof_ratio;
 profy.Position(4) = graph.Position(4);
 
 
+%% save data
 
 saveas(gcf,'finding registration.png')
 
