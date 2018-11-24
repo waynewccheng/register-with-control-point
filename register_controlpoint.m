@@ -108,22 +108,26 @@ axis image
 axis off
 
 if 1
-    % tight axis
-    gmargin = 0.05;
+    
+    %% tight axis
+    % control parameters
+    gmarginx = 0.05;
+    gmarginy = 0.05;
     gx = 2;
     gy = 2;
-    gstepx = (1-gmargin)/gx;
-    gstepy = (1-gmargin)/gy;
-    
-    for i = 1:4
-        row = (gy-1) - floor((i-1)/gy);
-        column = mod(i-1,gy);
-        gposx = gmargin + column * gstepx;
-        gposy = gmargin + row * gstepy;
+
+    % calculate
+    gstepx = (1-gmarginx)/gx;
+    gstepy = (1-gmarginy)/gy;
+    for i = 1:gx*gy
+        grow = (gy-1) - floor((i-1)/gx);
+        gcolumn = mod(i-1,gx);
+        gposx = gmarginx + gcolumn * gstepx;
+        gposy = gmarginy + grow * gstepy;
         sp(i).Position(1) = gposx;
         sp(i).Position(2) = gposy;
-        sp(i).Position(3) = gstepx - gmargin;
-        sp(i).Position(4) = (gstepy - gmargin);
+        sp(i).Position(3) = gstepx - gmarginx;
+        sp(i).Position(4) = (gstepy - gmarginy);
     end
 end
 
