@@ -21,7 +21,7 @@ imf_before = imfuse(original,unregistered,'falsecolor','Scaling','joint','ColorC
 % and wait until control points are exported
 
 % use previous selected control points?
-if 1
+if 0
     load('my_control_points','movingPoints','fixedPoints');
 else
     [movingPoints,fixedPoints] = cpselect(unregistered, original, 'Wait', true);

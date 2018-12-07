@@ -4,17 +4,23 @@ function check_registration_with_bars
 
 % intentionally create offset to show what if misaligned
 % ended up the original tform was not optimal
-offset = [-1 0]
+offset = [0 0]
 
 %% determine where to profile
 cursor = [26 78];
 
 % the ROI size
 % need to be square before the profiles sizing is fixed
-sizex = 300;
-sizey = 300;
 
 load('output_images','original','unregistered','registered_cp','registered_cp_corr','imf_before','imf_cp_corr')
+
+if 1
+    sizex = 1200;
+    sizey = 800;
+else
+    sizex = size(original,2);
+    sizey = size(original,1);
+end
 
 done = 0;
 while done==0
@@ -26,7 +32,7 @@ while done==0
     
     sizex2_original = size(original,2);
     sizey2_original = size(original,1);
-
+    
     % size for im1
     sizex1 = 1;
     sizey1 = 1;
@@ -46,7 +52,7 @@ while done==0
     im1 = original(sizey1:sizey2,sizex1:sizex2,:);
     
     im2 = registered_cp_corr(reg_sizey,reg_sizex,:);
-        
+    
     imf_test = imfuse(im1,im2,...
         'falsecolor','Scaling','joint',...
         'ColorChannels',[1 2 0]);
